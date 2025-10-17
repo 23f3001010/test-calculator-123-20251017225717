@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Management Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .dashboard {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .calculator-screen {
+            grid-column: span 4;
+            height: 50px;
+            text-align: right;
+            padding: 10px;
+            font-size: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .calculator-grid button {
+            font-size: 1rem;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .calculator-grid button:hover {
+            background-color: #e7e7e7;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h2 class="text-center mb-4">Sales Management Dashboard</h2>
+        <div class="calculator-grid">
+            <input type="text" id="display" class="calculator-screen" disabled>
+            <button class="btn btn-primary" onclick="appendNumber('7')">7</button>
+            <button class="btn btn-primary" onclick="appendNumber('8')">8</button>
+            <button class="btn btn-primary" onclick="appendNumber('9')">9</button>
+            <button class="btn btn-danger" onclick="setOperation('/')">/</button>
+            <button class="btn btn-primary" onclick="appendNumber('4')">4</button>
+            <button class="btn btn-primary" onclick="appendNumber('5')">5</button>
+            <button class="btn btn-primary" onclick="appendNumber('6')">6</button>
+            <button class="btn btn-danger" onclick="setOperation('*')">*</button>
+            <button class="btn btn-primary" onclick="appendNumber('1')">1</button>
+            <button class="btn btn-primary" onclick="appendNumber('2')">2</button>
+            <button class="btn btn-primary" onclick="appendNumber('3')">3</button>
+            <button class="btn btn-danger" onclick="setOperation('-')">-</button>
+            <button class="btn btn-primary" onclick="appendNumber('0')">0</button>
+            <button class="btn btn-secondary" onclick="clearDisplay()">C</button>
+            <button class="btn btn-success" onclick="compute()">=</button>
+            <button class="btn btn-danger" onclick="setOperation('+')">+</button>
+        </div>
+    </div>
+
+    <script>
+        let currentOperand = "";
+        let previousOperand = "";
+        let currentOperation = null;
+
+        const display = document.getElementById('display');
+
+        function appendNumber(number) {
+            if (currentOperand.length >= 12) return;
+            currentOperand = currentOperand.toString() + number.toString();
+            updateDisplay();
+        }
+
+        function setOperation(operation) {
+            if (currentOperand === "") return;
+            if (previousOperand !== "") {
+                compute();
+            }
+            currentOperation = operation;
+            previousOperand = currentOperand;
+            currentOperand = "";
+        }
+
+        function compute() {
+            let computation;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            if (isNaN(prev) || isNaN(current)) return;
+            switch (currentOperation) {
+                case '+':
+                    computation = prev + current;
+                    break;
+                case '-':
+                    computation = prev - current;
+                    break;
+                case '*':
+                    computation = prev * current;
+                    break;
+                case '/':
+                    computation = prev / current;
+                    break;
+                default:
+                    return;
+            }
+            currentOperand = computation;
+            currentOperation = undefined;
+            previousOperand = "";
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            display.value = currentOperand;
+        }
+
+        function clearDisplay() {
+            currentOperand = "";
+            previousOperand = "";
+            currentOperation = null;
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>
